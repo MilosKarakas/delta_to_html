@@ -62,11 +62,11 @@ encoder(List delta) {
                 break;
               case "background":
                 currentText =
-                    "<span style='background-color:$value'>$currentText</span>";
+                "<span style='background-color:$value'>$currentText</span>";
                 break;
               case "font":
                 currentText =
-                    "<span style='font-family:$value'>$currentText</span>";
+                "<span style='font-family:$value'>$currentText</span>";
                 break;
 
               case "bold":
@@ -92,11 +92,11 @@ encoder(List delta) {
                     break;
                   case "huge":
                     currentText =
-                        "<span style='font-size:150%'>$currentText</span>";
+                    "<span style='font-size:150%'>$currentText</span>";
                     break;
                   default:
                     currentText =
-                        "<span style='font-size:${value}px'>$currentText</span>";
+                    "<span style='font-size:${value}px'>$currentText</span>";
                     break;
                 }
                 break;
@@ -107,7 +107,7 @@ encoder(List delta) {
 
               case "code":
                 currentText =
-                    "<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$currentText</code>";
+                "<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$currentText</code>";
                 break;
               default:
             }
@@ -116,12 +116,27 @@ encoder(List delta) {
         } else {
           //~ Block Text Implementation
           String rawHtml = html.toString();
+
           String blockString = '';
           if (rawHtml.contains('\\Þ')) {
             List dumpyStringList = rawHtml.split('\\Þ');
-            blockString = dumpyStringList.last;
+            String initalPartThatShouldBeWritten = '';
+            bool shouldSeparateOnNewLine = currentAttributeMap.keys.contains('list');
+
+            if (shouldSeparateOnNewLine) {
+              List helperDumpyStringList = dumpyStringList.last.split('\n');
+              blockString = helperDumpyStringList.last;
+              helperDumpyStringList.removeLast();
+              initalPartThatShouldBeWritten = helperDumpyStringList.join('\n');
+            } else {
+              blockString = dumpyStringList.last;
+            }
+
             dumpyStringList.removeLast();
             String dumpyString = dumpyStringList.join();
+
+            dumpyString = dumpyString + initalPartThatShouldBeWritten;
+
             html.clear();
             html.write(dumpyString);
           } else {
@@ -132,6 +147,7 @@ encoder(List delta) {
             html.clear();
             html.write(dumpyString);
           }
+
           currentAttributeMap.forEach((key, value) {
             switch (key.toString()) {
               case "header":
@@ -148,7 +164,7 @@ encoder(List delta) {
 
               case "code-block":
                 currentText =
-                    "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$blockString</code></pre>";
+                "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$blockString</code></pre>";
                 break;
 
               case "blockquote":
@@ -189,11 +205,11 @@ encoder(List delta) {
                     break;
                   case "checked":
                     currentText =
-                        "<input type='checkbox' checked><label>$blockString</label><br>";
+                    "<input type='checkbox' checked><label>$blockString</label><br>";
                     break;
                   case "unchecked":
                     currentText =
-                        "<input type='checkbox' ><label>$blockString</label><br>";
+                    "<input type='checkbox' ><label>$blockString</label><br>";
                     break;
                 }
                 break;
