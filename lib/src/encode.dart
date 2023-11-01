@@ -47,7 +47,7 @@ encoder(List delta) {
       //! Rich Text Implementation
 
       //~ Normal Text Implementation
-      if (!element.containsKey('attributes')) {
+      if (!element.containsKey('attributes') || (element['attributes'] is Map && element['attributes'].isEmpty)) {
         html.write(element['insert'].toString());
       } else {
         String currentText = element['insert'].toString();
