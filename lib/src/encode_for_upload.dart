@@ -54,7 +54,7 @@ encoderForUpload(List delta) {
         html.write(element['insert'].toString());
 
         if (element['insert'].toString() == '\n') {
-          html.write('<br>');
+          print('INSERTING NEW LINE');
         }
       } else {
         print('INSERTING RICH TEXT: ${element['insert'].toString()}');
