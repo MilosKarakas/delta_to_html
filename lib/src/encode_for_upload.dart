@@ -198,10 +198,10 @@ encoderForUpload(List delta) {
                     } catch (e) {}
 
                     if (isStart && isEnd) {
-                      currentText = "<ol><li>$blockString</li></ol>";
+                      currentText = "<br><ol><li>$blockString</li></ol>";
                     } else {
                       if (isStart) {
-                        currentText = "<ol><li>$blockString</li>";
+                        currentText = "<br><ol><li>$blockString</li>";
                       } else if (isEnd) {
                         currentText = "<li>$blockString</li></ol>";
                       } else {
@@ -211,7 +211,7 @@ encoderForUpload(List delta) {
 
                     break;
                   case "bullet":
-                    currentText = "<ul><li>$blockString</li></ul>";
+                    currentText = "<br><ul><li>$blockString</li></ul>";
                     break;
                   case "checked":
                     currentText =
