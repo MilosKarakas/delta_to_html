@@ -235,5 +235,6 @@ encoderForUpload(List delta) {
     }
   }
 
+  print('HTML: ${html.toString().replaceAll('\\Þ', '')}');
   return html.toString().replaceAll('\\Þ', '').replaceAll('\n', '<br>');
 }
