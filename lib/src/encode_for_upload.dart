@@ -11,7 +11,6 @@ encoderForUpload(List delta) {
 
     //! Embedded Implementation
     if (element['insert'] is Map<String, dynamic>) {
-      print('I THINK THIS IS AN EMBEDDED OBJECT');
       //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
@@ -37,14 +36,8 @@ encoderForUpload(List delta) {
     else {
       //~ Normal Text Implementation
       if (!element.containsKey('attributes') || (element['attributes'] is Map && element['attributes'].isEmpty)) {
-        print('INSERTING TEXT: ${element['insert'].toString()}');
         html.write(element['insert'].toString());
-
-        if (element['insert'].toString() == '\n') {
-          print('INSERTING NEW LINE');
-        }
       } else {
-        print('INSERTING RICH TEXT: ${element['insert'].toString()}');
         String currentText = element['insert'].toString();
         Map currentAttributeMap = element['attributes'] as Map;
 
@@ -233,6 +226,5 @@ encoderForUpload(List delta) {
     }
   }
 
-  print('HTML: ${html.toString().replaceAll('\\Þ', '')}');
   return html.toString().replaceAll('\\Þ', '').replaceAll('\n', '<br>');
 }
