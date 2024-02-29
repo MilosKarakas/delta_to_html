@@ -19,6 +19,7 @@ encoderForUpload(List delta) {
 
     //! Embedded Implementation
     if (element['insert'] is Map<String, dynamic>) {
+      print('I THINK THIS IS AN EMBEDDED OBJECT');
       //~ Image Implementation
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
