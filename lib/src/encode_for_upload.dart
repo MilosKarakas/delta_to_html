@@ -54,9 +54,10 @@ encoderForUpload(List delta) {
         html.write(element['insert'].toString());
 
         if (element['insert'].toString() == '\n') {
-          print('INSERTING NEW LINE');
+          html.write('<br>');
         }
       } else {
+        print('INSERTING RICH TEXT: ${element['insert'].toString()}');
         String currentText = element['insert'].toString();
         Map currentAttributeMap = element['attributes'] as Map;
 
