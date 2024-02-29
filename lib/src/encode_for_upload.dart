@@ -2,15 +2,7 @@ encoderForUpload(List delta) {
   StringBuffer html = StringBuffer();
   //! End Loop Implementation
   delta.add({'insert': ' '});
-  List blockElements = [
-    'header',
-    'align',
-    'direction',
-    'list',
-    'blockquote',
-    'code-block',
-    'indent'
-  ];
+  List blockElements = ['header', 'align', 'direction', 'list', 'blockquote', 'code-block', 'indent'];
 
   int listIndex = -1;
 
@@ -24,12 +16,7 @@ encoderForUpload(List delta) {
       if (element['insert'].containsKey('image')) {
         String imageLink = element['insert']['image'].toString();
         if (element.containsKey('attributes')) {
-          String style = element['attributes']['style']
-              .toString()
-              .replaceAll('mobile', '')
-              .replaceAll(':', "='")
-              .replaceAll(';', "'")
-              .toLowerCase();
+          String style = element['attributes']['style'].toString().replaceAll('mobile', '').replaceAll(':', "='").replaceAll(';', "'").toLowerCase();
           html.write("<img src='$imageLink' $style>");
         } else {
           html.write("<img src='$imageLink'>");
@@ -69,12 +56,10 @@ encoderForUpload(List delta) {
                 currentText = "<span style='color:$value'>$currentText</span>";
                 break;
               case "background":
-                currentText =
-                "<span style='background-color:$value'>$currentText</span>";
+                currentText = "<span style='background-color:$value'>$currentText</span>";
                 break;
               case "font":
-                currentText =
-                "<span style='font-family:$value'>$currentText</span>";
+                currentText = "<span style='font-family:$value'>$currentText</span>";
                 break;
 
               case "bold":
@@ -99,12 +84,10 @@ encoderForUpload(List delta) {
                     currentText = "<big>$currentText</big>";
                     break;
                   case "huge":
-                    currentText =
-                    "<span style='font-size:150%'>$currentText</span>";
+                    currentText = "<span style='font-size:150%'>$currentText</span>";
                     break;
                   default:
-                    currentText =
-                    "<span style='font-size:${value}px'>$currentText</span>";
+                    currentText = "<span style='font-size:${value}px'>$currentText</span>";
                     break;
                 }
                 break;
@@ -114,8 +97,7 @@ encoderForUpload(List delta) {
                 break;
 
               case "code":
-                currentText =
-                "<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$currentText</code>";
+                currentText = "<code style='color:#e1103a; background-color:#f1f1f1; padding: 0px 4px;'>$currentText</code>";
                 break;
               default:
             }
@@ -173,8 +155,7 @@ encoderForUpload(List delta) {
                 break;
 
               case "code-block":
-                currentText =
-                "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$blockString</code></pre>";
+                currentText = "<pre><code style='color:#3F51B5; background-color:#f1f1f1; padding: 0px 4px;'>$blockString</code></pre>";
                 break;
 
               case "blockquote":
@@ -187,13 +168,11 @@ encoderForUpload(List delta) {
                     bool isStart = true, isEnd = true;
 
                     try {
-                      isStart = delta[listIndex - 2]['attributes']['list'] !=
-                          "ordered";
+                      isStart = delta[listIndex - 2]['attributes']['list'] != "ordered";
                       // ignore: empty_catches
                     } catch (e) {}
                     try {
-                      isEnd = delta[listIndex + 2]['attributes']['list'] !=
-                          "ordered";
+                      isEnd = delta[listIndex + 2]['attributes']['list'] != "ordered";
                       // ignore: empty_catches
                     } catch (e) {}
 
@@ -211,15 +190,34 @@ encoderForUpload(List delta) {
 
                     break;
                   case "bullet":
-                    currentText = "<br><ul><li>$blockString</li></ul>";
+                    bool isStart = true, isEnd = true;
+
+                    try {
+                      isStart = delta[listIndex - 2]['attributes']['list'] != "bullet";
+                      // ignore: empty_catches
+                    } catch (e) {}
+                    try {
+                      isEnd = delta[listIndex + 2]['attributes']['list'] != "bullet";
+                      // ignore: empty_catches
+                    } catch (e) {}
+
+                    if (isStart && isEnd) {
+                      currentText = "<br><ul><li>$blockString</li></ul>";
+                    } else {
+                      if (isStart) {
+                        currentText = "<br><ul><li>$blockString</li>";
+                      } else if (isEnd) {
+                        currentText = "<li>$blockString</li></ul>";
+                      } else {
+                        currentText = "<li>$blockString</li>";
+                      }
+                    }
                     break;
                   case "checked":
-                    currentText =
-                    "<input type='checkbox' checked><label>$blockString</label><br>";
+                    currentText = "<input type='checkbox' checked><label>$blockString</label><br>";
                     break;
                   case "unchecked":
-                    currentText =
-                    "<input type='checkbox' ><label>$blockString</label><br>";
+                    currentText = "<input type='checkbox' ><label>$blockString</label><br>";
                     break;
                 }
                 break;
