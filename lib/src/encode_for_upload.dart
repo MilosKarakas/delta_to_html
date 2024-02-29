@@ -43,12 +43,18 @@ encoderForUpload(List delta) {
       } else if (element['insert'].containsKey('line')) {
         html.write("<hr>");
       }
-    } else {
-      //! Rich Text Implementation
+    }
 
+    //! Rich Text Implementation
+    else {
       //~ Normal Text Implementation
       if (!element.containsKey('attributes') || (element['attributes'] is Map && element['attributes'].isEmpty)) {
+        print('INSERTING TEXT: ${element['insert'].toString()}');
         html.write(element['insert'].toString());
+
+        if (element['insert'].toString() == '\n') {
+          print('INSERTING NEW LINE');
+        }
       } else {
         String currentText = element['insert'].toString();
         Map currentAttributeMap = element['attributes'] as Map;
@@ -113,21 +119,23 @@ encoderForUpload(List delta) {
             }
           });
           html.write(currentText);
-        } else {
-          //~ Block Text Implementation
+        }
+
+        //~ Block Text Implementation
+        else {
           String rawHtml = html.toString();
 
           String blockString = '';
           if (rawHtml.contains('\\Þ')) {
             List dumpyStringList = rawHtml.split('\\Þ');
-            String initalPartThatShouldBeWritten = '';
+            String initialPartThatShouldBeWritten = '';
             bool shouldSeparateOnNewLine = currentAttributeMap.keys.contains('list');
 
             if (shouldSeparateOnNewLine) {
               List helperDumpyStringList = dumpyStringList.last.split('\n');
               blockString = helperDumpyStringList.last;
               helperDumpyStringList.removeLast();
-              initalPartThatShouldBeWritten = helperDumpyStringList.join('\n');
+              initialPartThatShouldBeWritten = helperDumpyStringList.join('\n');
             } else {
               blockString = dumpyStringList.last;
             }
@@ -135,7 +143,7 @@ encoderForUpload(List delta) {
             dumpyStringList.removeLast();
             String dumpyString = dumpyStringList.join();
 
-            dumpyString = dumpyString + initalPartThatShouldBeWritten;
+            dumpyString = dumpyString + initialPartThatShouldBeWritten;
 
             html.clear();
             html.write(dumpyString);
@@ -225,5 +233,5 @@ encoderForUpload(List delta) {
     }
   }
 
-  return html.toString().replaceAll('\\Þ', '').replaceAll('>\n', '<br>');
+  return html.toString().replaceAll('\\Þ', '').replaceAll('\n', '<br>');
 }
