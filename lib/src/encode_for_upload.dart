@@ -1,5 +1,8 @@
-encoderForUpload(List delta) {
+import 'dart:convert';
+
+encoderForUpload(List delta, {bool escapeHtml = false}) {
   StringBuffer html = StringBuffer();
+  HtmlEscape htmlEscape = HtmlEscape(HtmlEscapeMode.element);
   //! End Loop Implementation
   delta.add({'insert': ' '});
   List blockElements = ['header', 'align', 'direction', 'list', 'blockquote', 'code-block', 'indent'];
@@ -36,9 +39,11 @@ encoderForUpload(List delta) {
     else {
       //~ Normal Text Implementation
       if (!element.containsKey('attributes') || (element['attributes'] is Map && element['attributes'].isEmpty)) {
-        html.write(element['insert'].toString());
+        String escapedText = escapeHtml ? htmlEscape.convert(element['insert'].toString()) : element['insert'].toString();
+        html.write(escapedText);
       } else {
         String currentText = element['insert'].toString();
+        currentText = escapeHtml ? htmlEscape.convert(currentText) : currentText;
         Map currentAttributeMap = element['attributes'] as Map;
 
         //~ Inline Text Implementation
@@ -132,6 +137,8 @@ encoderForUpload(List delta) {
             html.clear();
             html.write(dumpyString);
           }
+
+          blockString = escapeHtml ? htmlEscape.convert(blockString) : blockString;
 
           currentAttributeMap.forEach((key, value) {
             switch (key.toString()) {
