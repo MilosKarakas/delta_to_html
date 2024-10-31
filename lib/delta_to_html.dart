@@ -9,7 +9,7 @@ class DeltaToHTML {
     return encoder(value);
   }
 
-  static encodeJsonForUpload(List value) {
-    return encoderForUpload(value);
+  static encodeJsonForUpload(List value, {bool escapeHtml = false}) {
+    return encoderForUpload(value, escapeHtml: escapeHtml);
   }
 }
